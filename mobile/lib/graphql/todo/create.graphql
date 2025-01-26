@@ -1,0 +1,5 @@
+mutation CreateTodo($input: CreateTodo!) {
+  createTodo(input: $input) {
+    ...TodoPart
+  }
+}

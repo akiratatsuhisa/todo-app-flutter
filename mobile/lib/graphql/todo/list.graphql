@@ -1,0 +1,5 @@
+query TodoList($archive: Boolean) {
+  todos(archive: $archive) {
+    ...TodoPart
+  }
+}

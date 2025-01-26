@@ -1,0 +1,5 @@
+mutation ArchiveTodo($id: ID!) {
+  archiveTodo(id: $id) {
+    id
+  }
+}

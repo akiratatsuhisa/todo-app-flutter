@@ -1,0 +1,7 @@
+fragment TodoPart on Todo {
+    id
+    text
+    description(truncate: true)
+    done
+    archived
+}

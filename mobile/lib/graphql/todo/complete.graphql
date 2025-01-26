@@ -1,0 +1,5 @@
+mutation CompleteTodo($id: ID!) {
+  completeTodo(id: $id) {
+    ...TodoPart
+  }
+}
