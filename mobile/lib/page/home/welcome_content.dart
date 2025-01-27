@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile/constant.dart';
 import 'package:mobile/page/home/bloc/home_bloc.dart';
 
 class WelcomeContent extends StatefulWidget {
@@ -47,6 +48,22 @@ class _WelcomeContentState extends State<WelcomeContent> {
     );
   }
 
+  Widget _buildBulletList({required List<Widget> children}) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: children.map((child) {
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text("\u2022"),
+            const SizedBox(width: Constant.space2),
+            Expanded(child: child),
+          ],
+        );
+      }).toList(),
+    );
+  }
+
   Widget _buildLayout(
     BuildContext context, {
     required int currentIndex,
@@ -54,39 +71,62 @@ class _WelcomeContentState extends State<WelcomeContent> {
     required Widget leading,
     required Widget trailing,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(child: child),
-        const SizedBox(height: 24.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildCircle(currentIndex: currentIndex, pageIndex: 0),
-            const SizedBox(width: 20.0),
-            _buildCircle(currentIndex: currentIndex, pageIndex: 1),
-            const SizedBox(width: 20.0),
-            _buildCircle(currentIndex: currentIndex, pageIndex: 2),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+    return SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(child: child),
+          const SizedBox(height: Constant.space6),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              leading,
-              const SizedBox(height: 8.0),
-              trailing,
+              _buildCircle(currentIndex: currentIndex, pageIndex: 0),
+              const SizedBox(width: Constant.space5),
+              _buildCircle(currentIndex: currentIndex, pageIndex: 1),
+              const SizedBox(width: Constant.space5),
+              _buildCircle(currentIndex: currentIndex, pageIndex: 2),
             ],
           ),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.all(Constant.space6),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                leading,
+                const SizedBox(height: Constant.space2),
+                trailing,
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildPage1(BuildContext context) {
-    const content = Center(
-      child: Text("Page 1"),
+    final theme = Theme.of(context);
+
+    final content = Padding(
+      padding: const EdgeInsets.all(Constant.space6),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset('assets/business-interview.png'),
+          Text(
+            "Welcome to Todo",
+            textAlign: TextAlign.center,
+            style: theme.textTheme.headlineSmall,
+          ),
+          const SizedBox(height: Constant.space2),
+          Text(
+            "Organize your tasks effortlessly",
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: theme.colorScheme.tertiary,
+            ),
+          ),
+        ],
+      ),
     );
 
     return _buildLayout(
@@ -107,8 +147,43 @@ class _WelcomeContentState extends State<WelcomeContent> {
   }
 
   Widget _buildPage2(BuildContext context) {
-    const content = Center(
-      child: Text("Page 2"),
+    final theme = Theme.of(context);
+
+    final content = Padding(
+      padding: const EdgeInsets.all(Constant.space6),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset('assets/task-list.png'),
+          const SizedBox(height: Constant.space5),
+          Text(
+            "Stay on Top of Your To-Dos",
+            textAlign: TextAlign.center,
+            style: theme.textTheme.headlineSmall,
+          ),
+          const SizedBox(height: Constant.space3),
+          Text(
+            "Plan, organize, and complete your tasks",
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: theme.colorScheme.tertiary,
+            ),
+          ),
+          const SizedBox(height: Constant.space2),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Constant.space4),
+            child: _buildBulletList(
+              children: [
+                const Text("Create detailed to-do lists for every goal"),
+                const Text(
+                    "Mark tasks as done and archive them when completed"),
+                const Text(
+                    "Full control with CRUD functionality: Add, Edit, Delete"),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
 
     return _buildLayout(
@@ -131,8 +206,43 @@ class _WelcomeContentState extends State<WelcomeContent> {
   }
 
   Widget _buildPage3(BuildContext context) {
-    const content = Center(
-      child: Text("Page 3"),
+    final theme = Theme.of(context);
+
+    final content = Padding(
+      padding: const EdgeInsets.all(Constant.space6),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset('assets/business-leader.png'),
+          const SizedBox(height: Constant.space5),
+          const SizedBox(height: Constant.space5),
+          Text(
+            "Your Productivity Partner",
+            textAlign: TextAlign.center,
+            style: theme.textTheme.headlineSmall,
+          ),
+          const SizedBox(height: Constant.space3),
+          Text(
+            "Unlock your full potential",
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: theme.colorScheme.tertiary,
+            ),
+          ),
+          const SizedBox(height: Constant.space2),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Constant.space4),
+            child: _buildBulletList(
+              children: [
+                const Text(
+                    "Start your journey toward better task management today"),
+                const Text("Set goals and watch your achievements grow"),
+                const Text("Enjoy a seamless experience to boost productivity"),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
 
     return _buildLayout(

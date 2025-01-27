@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/constant.dart';
 import 'package:mobile/interface/failure_state.dart';
 
 class FailureContent<E extends FailureState> extends StatelessWidget {
@@ -19,7 +20,7 @@ class FailureContent<E extends FailureState> extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.all(Constant.space6),
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -31,12 +32,12 @@ class FailureContent<E extends FailureState> extends StatelessWidget {
                   ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8.0),
+            const SizedBox(height: Constant.space2),
             Text(
               currentState.message,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 16.0),
+            const SizedBox(height: Constant.space4),
             FilledButton.icon(
               icon: const Icon(Icons.refresh),
               label: const Text('Retry'),

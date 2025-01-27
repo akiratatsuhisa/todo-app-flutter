@@ -10,6 +10,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/data/graphql.dart';
 
 import 'package:mobile/main.dart';
+import 'package:mobile/repository/home_repository.dart';
+import 'package:mobile/repository/todo_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -18,10 +20,13 @@ void main() {
     final preferences = await SharedPreferences.getInstance();
     final graphqlClient = GraphQLApi(preferences: preferences).getClient();
 
+    final homeRepository = HomeRepository(preferences: preferences);
+    final todoRepository = TodoRepository(client: graphqlClient);
+
     await tester.pumpWidget(
       MyApp(
-        preferences: preferences,
-        graphQLClient: graphqlClient,
+        homeRepository: homeRepository,
+        todoRepository: todoRepository,
       ),
     );
 

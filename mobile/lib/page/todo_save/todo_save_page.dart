@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/constant.dart';
 import 'package:mobile/page/todo_save/bloc/todo_save_bloc.dart';
 import 'package:mobile/widget/failure_content.dart';
 
@@ -67,7 +68,7 @@ class _TodoSavePageState extends State<TodoSavePage> {
     return Form(
       key: _formKey,
       child: ListView(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(Constant.space6),
         children: [
           TextFormField(
             controller: _textController,
@@ -90,7 +91,7 @@ class _TodoSavePageState extends State<TodoSavePage> {
             },
             readOnly: readOnly,
           ),
-          const SizedBox(height: 24.0),
+          const SizedBox(height: Constant.space6),
           TextFormField(
             controller: _descriptionController,
             decoration: const InputDecoration(
@@ -108,7 +109,7 @@ class _TodoSavePageState extends State<TodoSavePage> {
             },
             readOnly: readOnly,
           ),
-          const SizedBox(height: 24.0),
+          const SizedBox(height: Constant.space6),
           FilledButton(
             onPressed: readOnly ? null : _submit,
             child: const Text("Save"),
