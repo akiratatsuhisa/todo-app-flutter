@@ -1,4 +1,4 @@
-mutation UpdateTodo($id: ID, $input: UpdateTodo!) {
+mutation UpdateTodo($id: ID!, $input: UpdateTodo!) {
   updateTodo(id: $id, input: $input) {
     ...TodoPart
   }

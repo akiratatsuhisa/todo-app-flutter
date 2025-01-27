@@ -17,6 +17,8 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
     on<TodoListDataFetched>(_onTodoListDataFetched);
     on<TodoListItemToggleCompleted>(_onTodoListItemToggleCompleted);
     on<TodoListItemToggleArchived>(_onTodoListItemToggleArchived);
+    on<TodoListItemAdded>(_onTodoListItemAdded);
+    on<TodoListItemUpdated>(_onTodoListItemUpdated);
     on<TodoListItemRemoved>(_onTodoListItemRemoved);
   }
 
@@ -94,6 +96,42 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
         ),
       );
     }
+  }
+
+  void _onTodoListItemAdded(
+    TodoListItemAdded event,
+    Emitter<TodoListState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is! TodoListSuccess) {
+      return;
+    }
+
+    emit(
+      TodoListSuccess(
+        items: currentState.items.toList()..add(event.todo),
+      ),
+    );
+  }
+
+  void _onTodoListItemUpdated(
+    TodoListItemUpdated event,
+    Emitter<TodoListState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is! TodoListSuccess) {
+      return;
+    }
+
+    emit(
+      TodoListSuccess(
+        items: currentState.items
+            .map(
+              (item) => item.id == event.todo.id ? event.todo : item,
+            )
+            .toList(),
+      ),
+    );
   }
 
   Future<void> _onTodoListItemRemoved(

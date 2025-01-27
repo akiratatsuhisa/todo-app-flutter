@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/page/todo/bloc/archived_list_bloc.dart';
-import 'package:mobile/widget/FailureContent.dart';
+import 'package:mobile/widget/failure_content.dart';
 
 class ArchivedListPage extends StatefulWidget {
   const ArchivedListPage({super.key});
@@ -18,7 +18,7 @@ class _ArchivedListPageState extends State<ArchivedListPage> {
   Future<void> _fetchData() async => _bloc.add(const ArchivedListDataFetched());
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     _bloc = context.read<ArchivedListBloc>();
 
@@ -70,9 +70,13 @@ class _ArchivedListPageState extends State<ArchivedListPage> {
               onChanged: null,
             ),
             trailing: IconButton(
-              icon: const Icon(Icons.restore),
-              onPressed: () =>
-                  _bloc.add(ArchivedListItemToggleArchived(id: currentItem.id)),
+              icon: Icon(
+                Icons.restore,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              onPressed: () => _bloc.add(
+                ArchivedListItemToggleArchived(id: currentItem.id),
+              ),
             ),
           );
         },

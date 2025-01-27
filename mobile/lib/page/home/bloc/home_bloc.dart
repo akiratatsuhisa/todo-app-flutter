@@ -56,10 +56,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(HomeInProgress(currentIndex: currentState.currentIndex - 1));
   }
 
-  void _onHomeWelcomeReadingChecked(
+  Future<void> _onHomeWelcomeReadingChecked(
     HomeWelcomeReadingChecked event,
     Emitter<HomeState> emit,
-  ) {
+  ) async {
+    // For development only
+    await _homeRepository.setHasReadWelcome(false);
+
     final hasReadWelcome = _homeRepository.getHasReadWelcome();
 
     if (hasReadWelcome) {

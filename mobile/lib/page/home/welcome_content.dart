@@ -13,6 +13,8 @@ class _WelcomeContentState extends State<WelcomeContent> {
   late final HomeBloc _bloc;
   late final PageController _pageController;
 
+  static const _circleDiameter = 16.0;
+
   @override
   void initState() {
     super.initState();
@@ -27,7 +29,27 @@ class _WelcomeContentState extends State<WelcomeContent> {
     super.dispose();
   }
 
-  Widget _buildLayout({
+  Widget _buildCircle({
+    required int pageIndex,
+    required int currentIndex,
+  }) {
+    final theme = Theme.of(context);
+
+    return Container(
+      width: _circleDiameter,
+      height: _circleDiameter,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: currentIndex == pageIndex
+            ? theme.colorScheme.primary
+            : theme.colorScheme.primaryContainer,
+      ),
+    );
+  }
+
+  Widget _buildLayout(
+    BuildContext context, {
+    required int currentIndex,
     required Widget child,
     required Widget leading,
     required Widget trailing,
@@ -36,6 +58,17 @@ class _WelcomeContentState extends State<WelcomeContent> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Expanded(child: child),
+        const SizedBox(height: 24.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildCircle(currentIndex: currentIndex, pageIndex: 0),
+            const SizedBox(width: 20.0),
+            _buildCircle(currentIndex: currentIndex, pageIndex: 1),
+            const SizedBox(width: 20.0),
+            _buildCircle(currentIndex: currentIndex, pageIndex: 2),
+          ],
+        ),
         Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
@@ -51,55 +84,71 @@ class _WelcomeContentState extends State<WelcomeContent> {
     );
   }
 
-  Widget _buildPage1() {
+  Widget _buildPage1(BuildContext context) {
     const content = Center(
       child: Text("Page 1"),
     );
 
     return _buildLayout(
-      leading: FilledButton.tonal(
+      context,
+      currentIndex: 0,
+      leading: FilledButton.tonalIcon(
+        icon: const Icon(Icons.arrow_forward),
+        iconAlignment: IconAlignment.end,
+        label: const Text("Continue"),
         onPressed: () => _bloc.add(const HomePageIncreased()),
-        child: const Text("Continue"),
       ),
       trailing: TextButton(
-        onPressed: () => _bloc.add(const HomeWelcomeReadingCompleted()),
         child: const Text("Skip"),
+        onPressed: () => _bloc.add(const HomeWelcomeReadingCompleted()),
       ),
       child: content,
     );
   }
 
-  Widget _buildPage2() {
+  Widget _buildPage2(BuildContext context) {
     const content = Center(
       child: Text("Page 2"),
     );
 
     return _buildLayout(
-      leading: FilledButton.tonal(
+      context,
+      currentIndex: 1,
+      leading: FilledButton.tonalIcon(
+        icon: const Icon(Icons.arrow_forward),
+        iconAlignment: IconAlignment.end,
+        label: const Text("Continue"),
         onPressed: () => _bloc.add(const HomePageIncreased()),
-        child: const Text("Continue"),
       ),
-      trailing: OutlinedButton(
+      trailing: TextButton.icon(
+        icon: const Icon(Icons.arrow_back),
+        iconAlignment: IconAlignment.start,
+        label: const Text("Back"),
         onPressed: () => _bloc.add(const HomePageDecreased()),
-        child: const Text("Back"),
       ),
       child: content,
     );
   }
 
-  Widget _buildPage3() {
+  Widget _buildPage3(BuildContext context) {
     const content = Center(
       child: Text("Page 3"),
     );
 
     return _buildLayout(
-      leading: FilledButton(
+      context,
+      currentIndex: 2,
+      leading: FilledButton.icon(
+        icon: const Icon(Icons.start),
+        iconAlignment: IconAlignment.end,
+        label: const Text("Get Started"),
         onPressed: () => _bloc.add(const HomeWelcomeReadingCompleted()),
-        child: const Text("Get Started"),
       ),
-      trailing: OutlinedButton(
+      trailing: OutlinedButton.icon(
+        icon: const Icon(Icons.arrow_back),
+        iconAlignment: IconAlignment.start,
+        label: const Text("Back"),
         onPressed: () => _bloc.add(const HomePageDecreased()),
-        child: const Text("Back"),
       ),
       child: content,
     );
@@ -124,9 +173,9 @@ class _WelcomeContentState extends State<WelcomeContent> {
           controller: _pageController,
           onPageChanged: (value) => _bloc.add(HomePageSet(index: value)),
           children: [
-            _buildPage1(),
-            _buildPage2(),
-            _buildPage3(),
+            _buildPage1(context),
+            _buildPage2(context),
+            _buildPage3(context),
           ],
         ),
       ),

@@ -4,11 +4,10 @@ import 'package:mobile/page/home/bloc/home_bloc.dart';
 import 'package:mobile/page/home/home_page.dart';
 import 'package:mobile/page/todo/bloc/archived_list_bloc.dart';
 import 'package:mobile/page/todo/bloc/todo_list_bloc.dart';
-import 'package:mobile/page/todo_create/todo_create_page.dart';
-import 'package:mobile/page/todo_detail/todo_detail_page.dart';
+import 'package:mobile/page/todo_save/bloc/todo_save_bloc.dart';
+import 'package:mobile/page/todo_save/todo_save_page.dart';
 import 'package:mobile/page/todo/cubit/todo_nav_bar_cubit.dart';
 import 'package:mobile/page/todo/todo_page.dart';
-import 'package:mobile/page/todo_update/todo_update_page.dart';
 import 'package:mobile/repository/home_repository.dart';
 import 'package:mobile/repository/todo_repository.dart';
 
@@ -71,21 +70,25 @@ final router = GoRouter(
     //       child: TodoDetailPage(id: state.pathParameters['id']!),
     //     ),
     //   ),
-    //   GoRoute(
-    //     path: Routes.todoCreate.path,
-    //     name: Routes.todoCreate.name,
-    //     builder: (context, state) => BlocProvider(
-    //       create: (context) => HomeBloc(),
-    //       child: const TodoCreatePage(),
-    //     ),
-    //   ),
-    //   GoRoute(
-    //     path: '${Routes.todoUpdate.path}/:id',
-    //     name: Routes.todoUpdate.name,
-    //     builder: (context, state) => BlocProvider(
-    //       create: (context) => HomeBloc(),
-    //       child: TodoUpdatePage(id: state.pathParameters['id']!),
-    //     ),
-    //   ),
+    GoRoute(
+      path: Routes.todoCreate.path,
+      name: Routes.todoCreate.name,
+      builder: (context, state) => BlocProvider(
+        create: (context) => TodoSaveBloc(
+          todoRepository: context.read<TodoRepository>(),
+        ),
+        child: const TodoSavePage(),
+      ),
+    ),
+    GoRoute(
+      path: '${Routes.todoUpdate.path}/:id',
+      name: Routes.todoUpdate.name,
+      builder: (context, state) => BlocProvider(
+        create: (context) => TodoSaveBloc(
+          todoRepository: context.read<TodoRepository>(),
+        ),
+        child: TodoSavePage(initId: state.pathParameters['id']),
+      ),
+    ),
   ],
 );
