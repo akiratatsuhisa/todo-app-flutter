@@ -1,6 +1,6 @@
 part of 'todo_list_bloc.dart';
 
-class TodoListEvent {}
+sealed class TodoListEvent {}
 
 @freezed
 class TodoListDataFetched extends TodoListEvent with _$TodoListDataFetched {

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 class TodoDetailPage extends StatelessWidget {
-  const TodoDetailPage({super.key});
+  final String id;
+
+  const TodoDetailPage({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
-        child: Text('TodoDetailPage'),
+        child: Text('TodoDetailPage $id'),
       ),
     );
   }

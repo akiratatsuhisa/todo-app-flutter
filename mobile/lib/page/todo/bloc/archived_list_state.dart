@@ -1,6 +1,6 @@
 part of 'archived_list_bloc.dart';
 
-class ArchivedListState {}
+sealed class ArchivedListState {}
 
 @freezed
 class ArchivedListInitial extends ArchivedListState with _$ArchivedListInitial {
@@ -19,7 +19,11 @@ class ArchivedListSuccess extends ArchivedListState with _$ArchivedListSuccess {
 }
 
 @freezed
-class ArchivedListFailure extends ArchivedListState with _$ArchivedListFailure {
-  const factory ArchivedListFailure({required String message}) =
-      _ArchivedListFailure;
+class ArchivedListFailure extends ArchivedListState
+    with _$ArchivedListFailure
+    implements FailureState {
+  const factory ArchivedListFailure({
+    required String title,
+    required String message,
+  }) = _ArchivedListFailure;
 }

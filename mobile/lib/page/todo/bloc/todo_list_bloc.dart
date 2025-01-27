@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mobile/dto/todo.dart';
-import 'package:mobile/interface/error_state.dart';
+import 'package:mobile/interface/failure_state.dart';
 import 'package:mobile/repository/todo_repository.dart';
 
 part 'todo_list_event.dart';
@@ -9,10 +9,11 @@ part 'todo_list_state.dart';
 part 'todo_list_bloc.freezed.dart';
 
 class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
-  final TodoRepository todoRepository;
+  final TodoRepository _todoRepository;
 
-  TodoListBloc({required this.todoRepository})
-      : super(const TodoListInitial()) {
+  TodoListBloc({required TodoRepository todoRepository})
+      : _todoRepository = todoRepository,
+        super(const TodoListInitial()) {
     on<TodoListDataFetched>(_onTodoListDataFetched);
     on<TodoListItemToggleCompleted>(_onTodoListItemToggleCompleted);
     on<TodoListItemToggleArchived>(_onTodoListItemToggleArchived);
@@ -25,16 +26,14 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
   ) async {
     emit(const TodoListLoading());
 
-    await Future.delayed(const Duration(seconds: 2));
-
     try {
-      final todos = await todoRepository.getTodos(false);
+      final todos = await _todoRepository.getTodos(false);
       emit(TodoListSuccess(items: todos));
     } catch (e) {
       emit(
         const TodoListFailure(
-          message:
-              'An unexpected error occurred while attempting to fetch the todo list.',
+          title: "Let's try that again",
+          message: "Sorry about that. There was an error loading content.",
         ),
       );
     }
@@ -50,7 +49,7 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
     }
 
     try {
-      final todo = await todoRepository.completeTodo(event.id);
+      final todo = await _todoRepository.completeTodo(event.id);
 
       emit(
         TodoListSuccess(
@@ -62,8 +61,8 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
     } catch (e) {
       emit(
         const TodoListFailure(
-          message:
-              'An unexpected error occurred while attempting to fetch the todo list.',
+          title: "Let's try that again",
+          message: "Sorry about that. There was an error loading content.",
         ),
       );
     }
@@ -79,7 +78,7 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
     }
 
     try {
-      final removedId = await todoRepository.archiveTodo(event.id);
+      final removedId = await _todoRepository.archiveTodo(event.id);
 
       emit(
         TodoListSuccess(
@@ -90,8 +89,8 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
     } catch (e) {
       emit(
         const TodoListFailure(
-          message:
-              'An unexpected error occurred while attempting to fetch the todo list.',
+          title: "Let's try that again",
+          message: "Sorry about that. There was an error loading content.",
         ),
       );
     }
@@ -107,7 +106,7 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
     }
 
     try {
-      final archivedId = await todoRepository.archiveTodo(event.id);
+      final archivedId = await _todoRepository.archiveTodo(event.id);
 
       emit(
         TodoListSuccess(
@@ -119,8 +118,8 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
     } catch (e) {
       emit(
         const TodoListFailure(
-          message:
-              'An unexpected error occurred while attempting to fetch the todo list.',
+          title: "Let's try that again",
+          message: "Sorry about that. There was an error loading content.",
         ),
       );
     }

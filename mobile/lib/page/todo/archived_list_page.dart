@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/page/todo/bloc/archived_list_bloc.dart';
-import 'package:mobile/widget/ErrorContent.dart';
+import 'package:mobile/widget/FailureContent.dart';
 
 class ArchivedListPage extends StatefulWidget {
   const ArchivedListPage({super.key});
@@ -13,16 +13,16 @@ class ArchivedListPage extends StatefulWidget {
 class _ArchivedListPageState extends State<ArchivedListPage> {
   static const title = "Archived Todo List";
 
-  late final ArchivedListBloc bloc;
+  late final ArchivedListBloc _bloc;
 
-  Future<void> _fetchData() async => bloc.add(const ArchivedListDataFetched());
+  Future<void> _fetchData() async => _bloc.add(const ArchivedListDataFetched());
 
   @override
   initState() {
     super.initState();
-    bloc = context.read<ArchivedListBloc>();
+    _bloc = context.read<ArchivedListBloc>();
 
-    if (bloc.state is ArchivedListInitial) {
+    if (_bloc.state is ArchivedListInitial) {
       _fetchData();
     }
   }
@@ -41,7 +41,7 @@ class _ArchivedListPageState extends State<ArchivedListPage> {
 
   Widget _buildDefaultBody(BuildContext context) {
     return BlocBuilder<ArchivedListBloc, ArchivedListState>(
-      builder: (context, state) => ErrorContent(
+      builder: (context, state) => FailureContent(
         state: state,
         onRetryPressed: _fetchData,
       ),
@@ -69,10 +69,10 @@ class _ArchivedListPageState extends State<ArchivedListPage> {
               value: currentItem.done,
               onChanged: null,
             ),
-            trailing: GestureDetector(
-              child: const Icon(Icons.restore),
-              onTap: () =>
-                  bloc.add(ArchivedListItemToggleArchived(id: currentItem.id)),
+            trailing: IconButton(
+              icon: const Icon(Icons.restore),
+              onPressed: () =>
+                  _bloc.add(ArchivedListItemToggleArchived(id: currentItem.id)),
             ),
           );
         },

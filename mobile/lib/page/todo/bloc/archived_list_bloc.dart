@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mobile/dto/todo.dart';
+import 'package:mobile/interface/failure_state.dart';
 import 'package:mobile/repository/todo_repository.dart';
 
 part 'archived_list_event.dart';
@@ -9,10 +10,11 @@ part 'archived_list_state.dart';
 part 'archived_list_bloc.freezed.dart';
 
 class ArchivedListBloc extends Bloc<ArchivedListEvent, ArchivedListState> {
-  final TodoRepository todoRepository;
+  final TodoRepository _todoRepository;
 
-  ArchivedListBloc({required this.todoRepository})
-      : super(const ArchivedListInitial()) {
+  ArchivedListBloc({required TodoRepository todoRepository})
+      : _todoRepository = todoRepository,
+        super(const ArchivedListInitial()) {
     on<ArchivedListDataFetched>(_onArchivedListDataFetched);
     on<ArchivedListItemToggleArchived>(_onArchivedListItemToggleArchived);
   }
@@ -23,16 +25,14 @@ class ArchivedListBloc extends Bloc<ArchivedListEvent, ArchivedListState> {
   ) async {
     emit(const ArchivedListLoading());
 
-    await Future.delayed(const Duration(seconds: 2));
-
     try {
-      final todos = await todoRepository.getTodos(true);
+      final todos = await _todoRepository.getTodos(true);
       emit(ArchivedListSuccess(items: todos));
     } catch (e) {
       emit(
         const ArchivedListFailure(
-          message:
-              'An unexpected error occurred while attempting to fetch the todo list.',
+          title: "Let's try that again",
+          message: "Sorry about that. There was an error loading content.",
         ),
       );
     }
@@ -48,7 +48,7 @@ class ArchivedListBloc extends Bloc<ArchivedListEvent, ArchivedListState> {
     }
 
     try {
-      final removedId = await todoRepository.archiveTodo(event.id);
+      final removedId = await _todoRepository.archiveTodo(event.id);
 
       emit(
         ArchivedListSuccess(
@@ -59,8 +59,8 @@ class ArchivedListBloc extends Bloc<ArchivedListEvent, ArchivedListState> {
     } catch (e) {
       emit(
         const ArchivedListFailure(
-          message:
-              'An unexpected error occurred while attempting to fetch the todo list.',
+          title: "Let's try that again",
+          message: "Sorry about that. There was an error loading content.",
         ),
       );
     }

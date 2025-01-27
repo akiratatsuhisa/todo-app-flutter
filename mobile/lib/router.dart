@@ -6,9 +6,10 @@ import 'package:mobile/page/todo/bloc/archived_list_bloc.dart';
 import 'package:mobile/page/todo/bloc/todo_list_bloc.dart';
 import 'package:mobile/page/todo_create/todo_create_page.dart';
 import 'package:mobile/page/todo_detail/todo_detail_page.dart';
-import 'package:mobile/page/todo/cubit/todo_bottom_nav_bar_cubit.dart';
+import 'package:mobile/page/todo/cubit/todo_nav_bar_cubit.dart';
 import 'package:mobile/page/todo/todo_page.dart';
 import 'package:mobile/page/todo_update/todo_update_page.dart';
+import 'package:mobile/repository/home_repository.dart';
 import 'package:mobile/repository/todo_repository.dart';
 
 enum Routes {
@@ -34,7 +35,9 @@ final router = GoRouter(
       path: Routes.home.path,
       name: Routes.home.name,
       builder: (context, state) => BlocProvider(
-        create: (context) => HomeBloc(),
+        create: (context) => HomeBloc(
+          homeRepository: context.read<HomeRepository>(),
+        ),
         child: const HomePage(),
       ),
     ),
@@ -44,7 +47,7 @@ final router = GoRouter(
       builder: (context, state) => MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => TodoBottomNavBarCubit(),
+            create: (context) => TodoNavBarCubit(),
           ),
           BlocProvider(
             create: (context) => TodoListBloc(
@@ -60,29 +63,29 @@ final router = GoRouter(
         child: const TodoPage(),
       ),
     ),
-    GoRoute(
-      path: '${Routes.todoDetail.path}/:id',
-      name: Routes.todoDetail.name,
-      builder: (context, state) => BlocProvider(
-        create: (context) => HomeBloc(),
-        child: const TodoDetailPage(),
-      ),
-    ),
-    GoRoute(
-      path: Routes.todoCreate.path,
-      name: Routes.todoCreate.name,
-      builder: (context, state) => BlocProvider(
-        create: (context) => HomeBloc(),
-        child: const TodoCreatePage(),
-      ),
-    ),
-    GoRoute(
-      path: '${Routes.todoUpdate.path}/:id',
-      name: Routes.todoUpdate.name,
-      builder: (context, state) => BlocProvider(
-        create: (context) => HomeBloc(),
-        child: TodoUpdatePage(id: state.pathParameters['id']!),
-      ),
-    ),
+    //   GoRoute(
+    //     path: '${Routes.todoDetail.path}/:id',
+    //     name: Routes.todoDetail.name,
+    //     builder: (context, state) => BlocProvider(
+    //       create: (context) => HomeBloc(),
+    //       child: TodoDetailPage(id: state.pathParameters['id']!),
+    //     ),
+    //   ),
+    //   GoRoute(
+    //     path: Routes.todoCreate.path,
+    //     name: Routes.todoCreate.name,
+    //     builder: (context, state) => BlocProvider(
+    //       create: (context) => HomeBloc(),
+    //       child: const TodoCreatePage(),
+    //     ),
+    //   ),
+    //   GoRoute(
+    //     path: '${Routes.todoUpdate.path}/:id',
+    //     name: Routes.todoUpdate.name,
+    //     builder: (context, state) => BlocProvider(
+    //       create: (context) => HomeBloc(),
+    //       child: TodoUpdatePage(id: state.pathParameters['id']!),
+    //     ),
+    //   ),
   ],
 );

@@ -43,11 +43,8 @@
   "compounds": [
     {
       "name": "Compound",
-      "configurations": [
-        "api",
-        "mobile (simulator)"
-        // "mobile (real)",
-      ]
+      // "configurations": ["api", "mobile (simulator)"]
+      "configurations": ["api", "mobile (simulator)", "mobile (real)"]
     }
   ]
 }

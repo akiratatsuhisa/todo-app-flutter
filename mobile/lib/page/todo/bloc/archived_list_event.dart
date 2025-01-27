@@ -1,6 +1,6 @@
 part of 'archived_list_bloc.dart';
 
-class ArchivedListEvent {}
+sealed class ArchivedListEvent {}
 
 @freezed
 class ArchivedListDataFetched extends ArchivedListEvent

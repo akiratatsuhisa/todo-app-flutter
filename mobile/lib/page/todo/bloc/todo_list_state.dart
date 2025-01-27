@@ -1,6 +1,6 @@
 part of 'todo_list_bloc.dart';
 
-class TodoListState {}
+sealed class TodoListState {}
 
 @freezed
 class TodoListInitial extends TodoListState with _$TodoListInitial {
@@ -21,6 +21,9 @@ class TodoListSuccess extends TodoListState with _$TodoListSuccess {
 @freezed
 class TodoListFailure extends TodoListState
     with _$TodoListFailure
-    implements ErrorState {
-  const factory TodoListFailure({required String message}) = _TodoListError;
+    implements FailureState {
+  const factory TodoListFailure({
+    required String title,
+    required String message,
+  }) = _TodoListError;
 }

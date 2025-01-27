@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/page/todo/bloc/todo_list_bloc.dart';
 import 'package:mobile/router.dart';
-import 'package:mobile/widget/ErrorContent.dart';
+import 'package:mobile/widget/FailureContent.dart';
 
 class TodoListPage extends StatefulWidget {
   const TodoListPage({super.key});
@@ -15,16 +15,16 @@ class TodoListPage extends StatefulWidget {
 class _TodoListPageState extends State<TodoListPage> {
   static const title = "Todo List";
 
-  late final TodoListBloc bloc;
+  late final TodoListBloc _bloc;
 
-  Future<void> _fetchData() async => bloc.add(const TodoListDataFetched());
+  Future<void> _fetchData() async => _bloc.add(const TodoListDataFetched());
 
   @override
   initState() {
     super.initState();
-    bloc = context.read<TodoListBloc>();
+    _bloc = context.read<TodoListBloc>();
 
-    if (bloc.state is TodoListInitial) {
+    if (_bloc.state is TodoListInitial) {
       _fetchData();
     }
   }
@@ -43,9 +43,9 @@ class _TodoListPageState extends State<TodoListPage> {
 
   Widget _buildDefaultBody(BuildContext context) {
     return BlocBuilder<TodoListBloc, TodoListState>(
-      builder: (context, state) => ErrorContent(
+      builder: (context, state) => FailureContent(
         state: state,
-        onRetryPressed: () => _fetchData,
+        onRetryPressed: _fetchData,
       ),
     );
   }
@@ -89,12 +89,12 @@ class _TodoListPageState extends State<TodoListPage> {
             secondaryBackground: secondaryBackground,
             confirmDismiss: (direction) async {
               if (direction == DismissDirection.startToEnd) {
-                bloc.add(TodoListItemToggleArchived(id: currentItem.id));
+                _bloc.add(TodoListItemToggleArchived(id: currentItem.id));
                 return true;
               }
 
               if (direction == DismissDirection.endToStart) {
-                bloc.add(TodoListItemRemoved(id: currentItem.id));
+                _bloc.add(TodoListItemRemoved(id: currentItem.id));
                 return true;
               }
 
@@ -107,7 +107,7 @@ class _TodoListPageState extends State<TodoListPage> {
                   : Text(currentItem.description!),
               leading: Checkbox(
                 value: currentItem.done,
-                onChanged: (value) => bloc.add(
+                onChanged: (value) => _bloc.add(
                   TodoListItemToggleCompleted(id: currentItem.id),
                 ),
               ),

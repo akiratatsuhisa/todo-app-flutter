@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/interface/error_state.dart';
+import 'package:mobile/interface/failure_state.dart';
 
-class ErrorContent<E extends ErrorState> extends StatelessWidget {
+class FailureContent<E extends FailureState> extends StatelessWidget {
   final Object state;
   final VoidCallback onRetryPressed;
 
-  const ErrorContent({
+  const FailureContent({
     super.key,
     required this.state,
     required this.onRetryPressed,
@@ -25,8 +25,15 @@ class ErrorContent<E extends ErrorState> extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
+              currentState.title,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8.0),
+            Text(
               currentState.message,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16.0),

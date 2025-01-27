@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/page/todo/archived_list_page.dart';
-import 'package:mobile/page/todo/cubit/todo_bottom_nav_bar_cubit.dart';
+import 'package:mobile/page/todo/cubit/todo_nav_bar_cubit.dart';
 import 'package:mobile/page/todo/todo_list_page.dart';
 
 class TodoPage extends StatefulWidget {
@@ -12,14 +12,14 @@ class TodoPage extends StatefulWidget {
 }
 
 class _TodoPageState extends State<TodoPage> {
-  late final TodoBottomNavBarCubit cubit;
+  late final TodoNavBarCubit _cubit;
 
   late final PageController _pageController;
 
   @override
   void initState() {
     super.initState();
-    cubit = context.read<TodoBottomNavBarCubit>();
+    _cubit = context.read<TodoNavBarCubit>();
     _pageController = PageController();
   }
 
@@ -31,10 +31,10 @@ class _TodoPageState extends State<TodoPage> {
 
   _buildNav(BuildContext context) {
     return BottomNavigationBar(
-      currentIndex: context
-          .select((TodoBottomNavBarCubit cubit) => cubit.state.currentIndex),
+      currentIndex:
+          context.select((TodoNavBarCubit cubit) => cubit.state),
       onTap: (index) {
-        cubit.setTab(index);
+        _cubit.setIndex(index);
         _pageController.animateToPage(
           index,
           duration: const Duration(milliseconds: 500),
@@ -57,9 +57,7 @@ class _TodoPageState extends State<TodoPage> {
   _buildBody(BuildContext context) {
     return PageView(
       controller: _pageController,
-      onPageChanged: (index) {
-        cubit.setTab(index);
-      },
+      onPageChanged: _cubit.setIndex,
       children: const <Widget>[
         TodoListPage(),
         ArchivedListPage(),
