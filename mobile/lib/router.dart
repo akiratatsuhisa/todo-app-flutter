@@ -94,7 +94,7 @@ final router = GoRouter(
       builder: (context, state) => BlocProvider(
         create: (context) => TodoSaveBloc(
           todoRepository: context.read<TodoRepository>(),
-        ),
+        )..add(const TodoSaveInitialized()),
         child: const AuthGuard(child: TodoSavePage()),
       ),
     ),
@@ -104,10 +104,14 @@ final router = GoRouter(
       builder: (context, state) => BlocProvider(
         create: (context) => TodoSaveBloc(
           todoRepository: context.read<TodoRepository>(),
-        ),
+        )..add(
+            TodoSaveInitialized(
+              id: state.pathParameters['id'],
+            ),
+          ),
         child: AuthGuard(
           child: TodoSavePage(
-            initId: state.pathParameters['id'],
+            id: state.pathParameters['id'],
           ),
         ),
       ),

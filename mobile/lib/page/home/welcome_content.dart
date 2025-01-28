@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/constant.dart';
 import 'package:mobile/page/home/bloc/home_bloc.dart';
+import 'package:mobile/widget/bullet_list.dart';
 
 class WelcomeContent extends StatefulWidget {
   const WelcomeContent({super.key});
@@ -14,8 +15,6 @@ class _WelcomeContentState extends State<WelcomeContent> {
   late final HomeBloc _bloc;
   late final PageController _pageController;
 
-  static const _circleDiameter = 16.0;
-
   @override
   void initState() {
     super.initState();
@@ -27,18 +26,63 @@ class _WelcomeContentState extends State<WelcomeContent> {
   @override
   void dispose() {
     _pageController.dispose();
+
+    _bloc.close();
     super.dispose();
   }
 
-  Widget _buildCircle({
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: BlocListener<HomeBloc, HomeState>(
+        listener: (context, state) {
+          if (state is! HomeInProgress) {
+            return;
+          }
+
+          _pageController.animateToPage(
+            state.currentIndex,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeOut,
+          );
+        },
+        child: PageView(
+          controller: _pageController,
+          onPageChanged: (value) => _bloc.add(HomePageSet(index: value)),
+          children: const <Widget>[
+            _Page1(),
+            _Page2(),
+            _Page3(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Layout extends StatelessWidget {
+  final int currentIndex;
+  final Widget child;
+  final Widget leading;
+  final Widget trailing;
+
+  const _Layout({
+    required this.currentIndex,
+    required this.child,
+    required this.leading,
+    required this.trailing,
+  });
+
+  Widget _buildCircle(
+    BuildContext context, {
     required int pageIndex,
     required int currentIndex,
   }) {
     final theme = Theme.of(context);
 
     return Container(
-      width: _circleDiameter,
-      height: _circleDiameter,
+      width: Constant.space4,
+      height: Constant.space4,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: currentIndex == pageIndex
@@ -48,29 +92,8 @@ class _WelcomeContentState extends State<WelcomeContent> {
     );
   }
 
-  Widget _buildBulletList({required List<Widget> children}) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: children.map((child) {
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text("\u2022"),
-            const SizedBox(width: Constant.space2),
-            Expanded(child: child),
-          ],
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildLayout(
-    BuildContext context, {
-    required int currentIndex,
-    required Widget child,
-    required Widget leading,
-    required Widget trailing,
-  }) {
+  @override
+  Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -80,11 +103,11 @@ class _WelcomeContentState extends State<WelcomeContent> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildCircle(currentIndex: currentIndex, pageIndex: 0),
+              _buildCircle(context, currentIndex: currentIndex, pageIndex: 0),
               const SizedBox(width: Constant.space5),
-              _buildCircle(currentIndex: currentIndex, pageIndex: 1),
+              _buildCircle(context, currentIndex: currentIndex, pageIndex: 1),
               const SizedBox(width: Constant.space5),
-              _buildCircle(currentIndex: currentIndex, pageIndex: 2),
+              _buildCircle(context, currentIndex: currentIndex, pageIndex: 2),
             ],
           ),
           Padding(
@@ -102,9 +125,15 @@ class _WelcomeContentState extends State<WelcomeContent> {
       ),
     );
   }
+}
 
-  Widget _buildPage1(BuildContext context) {
+class _Page1 extends StatelessWidget {
+  const _Page1();
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final bloc = context.read<HomeBloc>();
 
     final content = Padding(
       padding: const EdgeInsets.all(Constant.space6),
@@ -129,25 +158,30 @@ class _WelcomeContentState extends State<WelcomeContent> {
       ),
     );
 
-    return _buildLayout(
-      context,
+    return _Layout(
       currentIndex: 0,
       leading: FilledButton.tonalIcon(
         icon: const Icon(Icons.arrow_forward),
         iconAlignment: IconAlignment.end,
         label: const Text("Continue"),
-        onPressed: () => _bloc.add(const HomePageIncreased()),
+        onPressed: () => bloc.add(const HomePageIncreased()),
       ),
       trailing: TextButton(
         child: const Text("Skip"),
-        onPressed: () => _bloc.add(const HomeWelcomeReadingCompleted()),
+        onPressed: () => bloc.add(const HomeWelcomeReadingCompleted()),
       ),
       child: content,
     );
   }
+}
 
-  Widget _buildPage2(BuildContext context) {
+class _Page2 extends StatelessWidget {
+  const _Page2();
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final bloc = context.read<HomeBloc>();
 
     final content = Padding(
       padding: const EdgeInsets.all(Constant.space6),
@@ -170,43 +204,50 @@ class _WelcomeContentState extends State<WelcomeContent> {
             ),
           ),
           const SizedBox(height: Constant.space2),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Constant.space4),
-            child: _buildBulletList(
-              children: [
-                const Text("Create detailed to-do lists for every goal"),
-                const Text(
-                    "Mark tasks as done and archive them when completed"),
-                const Text(
-                    "Full control with CRUD functionality: Add, Edit, Delete"),
-              ],
-            ),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: Constant.space4),
+            child: BulletList(children: [
+              Text(
+                "Create detailed to-do lists for every goal",
+              ),
+              Text(
+                "Mark tasks as done and archive them when completed",
+              ),
+              Text(
+                "Full control with CRUD functionality: Add, Edit, Delete",
+              ),
+            ]),
           ),
         ],
       ),
     );
 
-    return _buildLayout(
-      context,
+    return _Layout(
       currentIndex: 1,
       leading: FilledButton.tonalIcon(
         icon: const Icon(Icons.arrow_forward),
         iconAlignment: IconAlignment.end,
         label: const Text("Continue"),
-        onPressed: () => _bloc.add(const HomePageIncreased()),
+        onPressed: () => bloc.add(const HomePageIncreased()),
       ),
       trailing: TextButton.icon(
         icon: const Icon(Icons.arrow_back),
         iconAlignment: IconAlignment.start,
         label: const Text("Back"),
-        onPressed: () => _bloc.add(const HomePageDecreased()),
+        onPressed: () => bloc.add(const HomePageDecreased()),
       ),
       child: content,
     );
   }
+}
 
-  Widget _buildPage3(BuildContext context) {
+class _Page3 extends StatelessWidget {
+  const _Page3();
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final bloc = context.read<HomeBloc>();
 
     final content = Padding(
       padding: const EdgeInsets.all(Constant.space6),
@@ -230,65 +271,39 @@ class _WelcomeContentState extends State<WelcomeContent> {
             ),
           ),
           const SizedBox(height: Constant.space2),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Constant.space4),
-            child: _buildBulletList(
-              children: [
-                const Text(
-                    "Start your journey toward better task management today"),
-                const Text("Set goals and watch your achievements grow"),
-                const Text("Enjoy a seamless experience to boost productivity"),
-              ],
-            ),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: Constant.space4),
+            child: BulletList(children: [
+              Text(
+                "Start your journey toward better task management today",
+              ),
+              Text(
+                "Set goals and watch your achievements grow",
+              ),
+              Text(
+                "Enjoy a seamless experience to boost productivity",
+              ),
+            ]),
           ),
         ],
       ),
     );
 
-    return _buildLayout(
-      context,
+    return _Layout(
       currentIndex: 2,
       leading: FilledButton.icon(
         icon: const Icon(Icons.start),
         iconAlignment: IconAlignment.end,
         label: const Text("Get Started"),
-        onPressed: () => _bloc.add(const HomeWelcomeReadingCompleted()),
+        onPressed: () => bloc.add(const HomeWelcomeReadingCompleted()),
       ),
       trailing: OutlinedButton.icon(
         icon: const Icon(Icons.arrow_back),
         iconAlignment: IconAlignment.start,
         label: const Text("Back"),
-        onPressed: () => _bloc.add(const HomePageDecreased()),
+        onPressed: () => bloc.add(const HomePageDecreased()),
       ),
       child: content,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocListener<HomeBloc, HomeState>(
-        listener: (context, state) {
-          if (state is! HomeInProgress) {
-            return;
-          }
-
-          _pageController.animateToPage(
-            state.currentIndex,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeOut,
-          );
-        },
-        child: PageView(
-          controller: _pageController,
-          onPageChanged: (value) => _bloc.add(HomePageSet(index: value)),
-          children: [
-            _buildPage1(context),
-            _buildPage2(context),
-            _buildPage3(context),
-          ],
-        ),
-      ),
     );
   }
 }

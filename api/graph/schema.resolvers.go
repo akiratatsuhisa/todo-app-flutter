@@ -15,7 +15,7 @@ func strPtr(s string) *string {
 	return &s
 }
 
-var id = 10
+var id = 20
 var todos = []*model.Todo{
 	{ID: "1", Text: "Buy groceries", Done: false, Archived: false, Description: strPtr("Buy milk, eggs, bread, and other essential groceries for the week. Also, get some snacks and drinks.")},
 	{ID: "2", Text: "Read book", Done: true, Archived: true, Description: strPtr("Finish reading 'The Great Gatsby' and write a summary of the book. Reflect on the themes and characters.")},

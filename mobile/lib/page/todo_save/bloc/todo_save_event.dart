@@ -9,9 +9,13 @@ class TodoSaveInitialized extends TodoSaveEvent with _$TodoSaveInitialized {
 
 @freezed
 class TodoSaveSubmitted extends TodoSaveEvent with _$TodoSaveSubmitted {
-  const factory TodoSaveSubmitted({
-    String? id,
-    required String text,
-    String? description,
-  }) = _TodoSaveSubmitted;
+  const factory TodoSaveSubmitted({String? id}) = _TodoSaveSubmitted;
+}
+
+@freezed
+class TodoSaveFieldChanged extends TodoSaveEvent with _$TodoSaveFieldChanged {
+  const factory TodoSaveFieldChanged({
+    required String field,
+    required String value,
+  }) = _TodoSaveFieldChanged;
 }

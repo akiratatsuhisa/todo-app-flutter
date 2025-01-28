@@ -78,7 +78,7 @@ class _TodoListPageState extends State<TodoListPage> {
       final list = ListView.separated(
         itemCount: state.items.length,
         itemBuilder: (context, index) {
-          final currentItem = state.items[index];
+          final currentItem = state.items.elementAt(index);
 
           final background = Container(
             color: theme.colorScheme.secondaryContainer,

@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:mobile/model/input/input.dart';
+import 'package:mobile/model/input/auth_input.dart';
 import 'package:mobile/repository/authentication_repository.dart';
 
 part 'login_state.dart';
@@ -16,27 +16,31 @@ class LoginCubit extends Cubit<LoginState> {
         super(const LoginState());
 
   void emailChanged(String value) {
-    final email = Email.dirty(value);
+    final email = AuthEmail.dirty(value);
     emit(
       state.copyWith(
         email: email,
-        isValid: Formz.validate([email, state.password]),
       ),
     );
   }
 
   void passwordChanged(String value) {
-    final password = Password.dirty(value);
+    final password = AuthPassword.dirty(value);
     emit(
       state.copyWith(
         password: password,
-        isValid: Formz.validate([state.email, password]),
       ),
     );
   }
 
   Future<void> logInWithCredentials() async {
-    if (!state.isValid) {
+    if (!Formz.validate([state.email, state.password])) {
+      emit(
+        state.copyWith(
+          email: AuthEmail.dirty(state.email.value),
+          password: AuthPassword.dirty(state.password.value),
+        ),
+      );
       return;
     }
 

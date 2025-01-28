@@ -79,7 +79,7 @@ class _EmailInput extends StatelessWidget {
       decoration: InputDecoration(
         labelText: 'email',
         helperText: '',
-        errorText: displayError != null ? 'invalid email' : null,
+        errorText: displayError?.message,
       ),
     );
   }
@@ -100,7 +100,7 @@ class _PasswordInput extends StatelessWidget {
       decoration: InputDecoration(
         labelText: 'password',
         helperText: '',
-        errorText: displayError != null ? 'invalid password' : null,
+        errorText: displayError?.message,
       ),
     );
   }
@@ -113,13 +113,9 @@ class _LoginButton extends StatelessWidget {
       (LoginCubit cubit) => cubit.state.status.isInProgress,
     );
 
-    final isValid = context.select(
-      (LoginCubit cubit) => cubit.state.isValid,
-    );
-
     return FilledButton.icon(
       key: const Key('loginForm_continue_raisedButton'),
-      onPressed: isValid || isInProgress
+      onPressed: !isInProgress
           ? () => context.read<LoginCubit>().logInWithCredentials()
           : null,
       icon: const Icon(Icons.login),

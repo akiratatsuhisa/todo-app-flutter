@@ -13,13 +13,11 @@ class TodoSaveLoading extends TodoSaveState with _$TodoSaveLoading {
 }
 
 @freezed
-class TodoSaveLoaded extends TodoSaveState with _$TodoSaveLoaded {
-  const factory TodoSaveLoaded({required Todo todo}) = _TodoSaveLoaded;
-}
-
-@freezed
 class TodoSaveInProgress extends TodoSaveState with _$TodoSaveInProgress {
-  const factory TodoSaveInProgress() = _TodoSaveInProgress;
+  const factory TodoSaveInProgress({
+    @Default(TodoText.pure()) TodoText text,
+    @Default(TodoDescription.pure()) TodoDescription description,
+  }) = _TodoSaveInProgress;
 }
 
 @freezed
