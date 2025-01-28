@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:mobile/data/graphql.dart';
+import 'package:mobile/bloc/auth_bloc.dart';
+import 'package:mobile/api/graphql.dart';
+import 'package:mobile/repository/authentication_repository.dart';
 import 'package:mobile/repository/home_repository.dart';
 import 'package:mobile/repository/todo_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,25 +18,29 @@ void main() async {
   );
 
   final preferences = await SharedPreferences.getInstance();
-  final graphqlClient = GraphQLApi(preferences: preferences).getClient();
+  final graphqlClient = GraphQLApi().getClient();
 
-  boostrap(
+  await boostrap(
     preferences: preferences,
     graphqlClient: graphqlClient,
   );
 }
 
-void boostrap({
+Future<void> boostrap({
   required SharedPreferences preferences,
   required GraphQLClient graphqlClient,
-}) {
+}) async {
   final homeRepository = HomeRepository(preferences: preferences);
   final todoRepository = TodoRepository(client: graphqlClient);
+  final authenticationRepository = AuthenticationRepository();
+
+  await authenticationRepository.user.first;
 
   runApp(
     MyApp(
       homeRepository: homeRepository,
       todoRepository: todoRepository,
+      authenticationRepository: authenticationRepository,
     ),
   );
 }
@@ -42,14 +48,16 @@ void boostrap({
 class MyApp extends StatelessWidget {
   final HomeRepository _homeRepository;
   final TodoRepository _todoRepository;
+  final AuthenticationRepository _authenticationRepository;
 
   const MyApp({
     super.key,
     required HomeRepository homeRepository,
     required TodoRepository todoRepository,
+    required AuthenticationRepository authenticationRepository,
   })  : _todoRepository = todoRepository,
-        _homeRepository = homeRepository;
-
+        _homeRepository = homeRepository,
+        _authenticationRepository = authenticationRepository;
   @override
   Widget build(BuildContext context) {
     final materialApp = MaterialApp.router(
@@ -62,17 +70,26 @@ class MyApp extends StatelessWidget {
           border: OutlineInputBorder(),
           floatingLabelBehavior: FloatingLabelBehavior.always,
         ),
+        snackBarTheme: const SnackBarThemeData(
+          behavior: SnackBarBehavior.floating,
+        ),
       ),
     );
 
-    final repositoryProviders = MultiRepositoryProvider(
+    final providers = MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(value: _homeRepository),
         RepositoryProvider.value(value: _todoRepository),
+        RepositoryProvider.value(value: _authenticationRepository),
       ],
-      child: materialApp,
+      child: BlocProvider(
+        create: (context) => AuthBloc(
+          authenticationRepository: context.read<AuthenticationRepository>(),
+        )..add(const AuthUserSubscriptionRequested()),
+        child: materialApp,
+      ),
     );
 
-    return repositoryProviders;
+    return providers;
   }
 }

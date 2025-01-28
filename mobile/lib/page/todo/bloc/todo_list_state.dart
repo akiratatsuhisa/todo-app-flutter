@@ -14,7 +14,7 @@ class TodoListLoading extends TodoListState with _$TodoListLoading {
 
 @freezed
 class TodoListSuccess extends TodoListState with _$TodoListSuccess {
-  const factory TodoListSuccess({required List<TodoDto> items}) =
+  const factory TodoListSuccess({required List<Todo> items}) =
       _TodoListSuccess;
 }
 

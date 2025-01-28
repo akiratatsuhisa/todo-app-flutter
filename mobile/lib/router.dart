@@ -2,17 +2,23 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile/page/home/bloc/home_bloc.dart';
 import 'package:mobile/page/home/home_page.dart';
+import 'package:mobile/page/login/cubit/login_cubit.dart';
+import 'package:mobile/page/login/login_page.dart';
 import 'package:mobile/page/todo/bloc/archived_list_bloc.dart';
 import 'package:mobile/page/todo/bloc/todo_list_bloc.dart';
 import 'package:mobile/page/todo_save/bloc/todo_save_bloc.dart';
 import 'package:mobile/page/todo_save/todo_save_page.dart';
 import 'package:mobile/page/todo/cubit/todo_nav_bar_cubit.dart';
 import 'package:mobile/page/todo/todo_page.dart';
+import 'package:mobile/repository/authentication_repository.dart';
 import 'package:mobile/repository/home_repository.dart';
 import 'package:mobile/repository/todo_repository.dart';
+import 'package:mobile/widget/auth_guard.dart';
 
 enum Routes {
   home(path: '/', name: 'home'),
+  login(path: '/login', name: 'login'),
+  register(path: '/register', name: 'register'),
   todo(path: '/todo', name: 'todo'),
   todoDetail(path: '/todo-detail', name: 'todoDetail'),
   todoCreate(path: '/todo-create', name: 'todoCreate'),
@@ -41,6 +47,18 @@ final router = GoRouter(
       ),
     ),
     GoRoute(
+      path: Routes.login.path,
+      name: Routes.login.name,
+      builder: (context, state) => BlocProvider(
+        create: (context) => LoginCubit(
+          authenticationRepository: context.read<AuthenticationRepository>(),
+        ),
+        child: LoginPage(
+          redirectUrl: state.uri.queryParameters['redirectUrl'],
+        ),
+      ),
+    ),
+    GoRoute(
       path: Routes.todo.path,
       name: Routes.todo.name,
       builder: (context, state) => MultiBlocProvider(
@@ -59,7 +77,7 @@ final router = GoRouter(
             ),
           ),
         ],
-        child: const TodoPage(),
+        child: const AuthGuard(child: TodoPage()),
       ),
     ),
     //   GoRoute(
@@ -77,7 +95,7 @@ final router = GoRouter(
         create: (context) => TodoSaveBloc(
           todoRepository: context.read<TodoRepository>(),
         ),
-        child: const TodoSavePage(),
+        child: const AuthGuard(child: TodoSavePage()),
       ),
     ),
     GoRoute(
@@ -87,7 +105,11 @@ final router = GoRouter(
         create: (context) => TodoSaveBloc(
           todoRepository: context.read<TodoRepository>(),
         ),
-        child: TodoSavePage(initId: state.pathParameters['id']),
+        child: AuthGuard(
+          child: TodoSavePage(
+            initId: state.pathParameters['id'],
+          ),
+        ),
       ),
     ),
   ],

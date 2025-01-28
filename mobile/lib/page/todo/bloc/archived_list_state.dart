@@ -14,7 +14,7 @@ class ArchivedListLoading extends ArchivedListState with _$ArchivedListLoading {
 
 @freezed
 class ArchivedListSuccess extends ArchivedListState with _$ArchivedListSuccess {
-  const factory ArchivedListSuccess({required List<TodoDto> items}) =
+  const factory ArchivedListSuccess({required List<Todo> items}) =
       _ArchivedListSuccess;
 }
 

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile/dto/todo.dart';
+import 'package:mobile/model/todo.dart';
 import 'package:mobile/page/todo/bloc/todo_list_bloc.dart';
 import 'package:mobile/router.dart';
 import 'package:mobile/widget/failure_content.dart';
+import 'package:mobile/widget/profile_button.dart';
 
 class TodoListPage extends StatefulWidget {
   const TodoListPage({super.key});
@@ -39,6 +40,7 @@ class _TodoListPageState extends State<TodoListPage> {
   PreferredSizeWidget _buildLoadedtAppBar(BuildContext context) {
     return AppBar(
       title: const Text(title),
+      actions: const <Widget>[ProfileButton()],
     );
   }
 
@@ -127,7 +129,7 @@ class _TodoListPageState extends State<TodoListPage> {
                   pathParameters: {'id': currentItem.id},
                 );
 
-                if (todo is TodoDto) {
+                if (todo is Todo) {
                   _bloc.add(TodoListItemUpdated(todo: todo));
                 }
               },
@@ -155,7 +157,7 @@ class _TodoListPageState extends State<TodoListPage> {
         final todo =
             await GoRouter.of(context).pushNamed(Routes.todoCreate.name);
 
-        if (todo is TodoDto) {
+        if (todo is Todo) {
           _bloc.add(TodoListItemAdded(todo: todo));
         }
       },

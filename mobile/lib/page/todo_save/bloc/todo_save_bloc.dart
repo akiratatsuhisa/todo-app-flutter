@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:mobile/dto/todo.dart';
+import 'package:mobile/model/todo.dart';
 import 'package:mobile/graphql/scheme.graphql.dart';
 import 'package:mobile/interface/failure_state.dart';
 import 'package:mobile/repository/todo_repository.dart';
@@ -40,7 +40,7 @@ class TodoSaveBloc extends Bloc<TodoSaveEvent, TodoSaveState> {
     emit(const TodoSaveLoading());
 
     try {
-      final TodoDto todo;
+      final Todo todo;
       if (event.id == null) {
         todo = await _todoRepository.createTodo(
           Input$CreateTodo(

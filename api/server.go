@@ -10,7 +10,10 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/akiratatsuhisa/todo_api/firebase"
 	"github.com/akiratatsuhisa/todo_api/graph"
+	"github.com/akiratatsuhisa/todo_api/middleware/auth"
+	"github.com/go-chi/chi"
 	"github.com/vektah/gqlparser/v2/ast"
 )
 
@@ -22,7 +25,14 @@ func main() {
 		port = defaultPort
 	}
 
-	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+	firebase.Init()
+
+	router := chi.NewRouter()
+	router.Use(auth.Middleware())
+
+	config := graph.Config{Resolvers: &graph.Resolver{}}
+
+	srv := handler.New(graph.NewExecutableSchema(config))
 
 	srv.AddTransport(transport.Options{})
 	srv.AddTransport(transport.GET{})
@@ -35,9 +45,9 @@ func main() {
 		Cache: lru.New[string](100),
 	})
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/graphql"))
-	http.Handle("/graphql", srv)
+	router.Handle("/", playground.Handler("GraphQL playground", "/graphql"))
+	router.Handle("/graphql", srv)
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe("localhost:"+port, nil))
+	log.Fatal(http.ListenAndServe("localhost:"+port, router))
 }

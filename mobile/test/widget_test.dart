@@ -7,9 +7,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile/data/graphql.dart';
+import 'package:mobile/api/graphql.dart';
 
 import 'package:mobile/main.dart';
+import 'package:mobile/repository/authentication_repository.dart';
 import 'package:mobile/repository/home_repository.dart';
 import 'package:mobile/repository/todo_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,15 +19,19 @@ void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     final preferences = await SharedPreferences.getInstance();
-    final graphqlClient = GraphQLApi(preferences: preferences).getClient();
+    final graphqlClient = GraphQLApi().getClient();
 
     final homeRepository = HomeRepository(preferences: preferences);
     final todoRepository = TodoRepository(client: graphqlClient);
+    final authenticationRepository = AuthenticationRepository();
+    
+    await authenticationRepository.user.first;
 
     await tester.pumpWidget(
       MyApp(
         homeRepository: homeRepository,
         todoRepository: todoRepository,
+        authenticationRepository: authenticationRepository,
       ),
     );
 

@@ -14,7 +14,7 @@ class TodoSaveLoading extends TodoSaveState with _$TodoSaveLoading {
 
 @freezed
 class TodoSaveLoaded extends TodoSaveState with _$TodoSaveLoaded {
-  const factory TodoSaveLoaded({required TodoDto todo}) = _TodoSaveLoaded;
+  const factory TodoSaveLoaded({required Todo todo}) = _TodoSaveLoaded;
 }
 
 @freezed
@@ -24,7 +24,7 @@ class TodoSaveInProgress extends TodoSaveState with _$TodoSaveInProgress {
 
 @freezed
 class TodoSaveSuccess extends TodoSaveState with _$TodoSaveSuccess {
-  const factory TodoSaveSuccess({required TodoDto todo}) = _TodoSaveSuccess;
+  const factory TodoSaveSuccess({required Todo todo}) = _TodoSaveSuccess;
 }
 
 @freezed

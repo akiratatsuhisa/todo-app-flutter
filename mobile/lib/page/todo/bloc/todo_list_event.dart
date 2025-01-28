@@ -23,12 +23,12 @@ class TodoListItemToggleArchived extends TodoListEvent
 
 @freezed
 class TodoListItemAdded extends TodoListEvent with _$TodoListItemAdded {
-  const factory TodoListItemAdded({required TodoDto todo}) = _TodoListItemAdded;
+  const factory TodoListItemAdded({required Todo todo}) = _TodoListItemAdded;
 }
 
 @freezed
 class TodoListItemUpdated extends TodoListEvent with _$TodoListItemUpdated {
-  const factory TodoListItemUpdated({required TodoDto todo}) =
+  const factory TodoListItemUpdated({required Todo todo}) =
       _TodoListItemUpdated;
 }
 

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:mobile/dto/todo.dart';
+import 'package:mobile/model/todo.dart';
 import 'package:mobile/graphql/scheme.graphql.dart';
 import 'package:mobile/graphql/todo/archive.graphql.dart';
 import 'package:mobile/graphql/todo/complete.graphql.dart';
@@ -16,7 +16,7 @@ class TodoRepository {
 
   TodoRepository({required GraphQLClient client}) : _client = client;
 
-  Future<List<TodoDto>> getTodos(bool? hasArchived) async {
+  Future<List<Todo>> getTodos(bool? hasArchived) async {
     final result = await _client.query$TodoList(
       Options$Query$TodoList(
         variables: Variables$Query$TodoList(archive: hasArchived),
@@ -29,7 +29,7 @@ class TodoRepository {
 
     return result.parsedData!.todos
         .map(
-          (todo) => TodoDto(
+          (todo) => Todo(
             id: todo.id,
             text: todo.text,
             done: todo.done,
@@ -40,7 +40,7 @@ class TodoRepository {
         .toList();
   }
 
-  Future<TodoDto> getTodo(String id) async {
+  Future<Todo> getTodo(String id) async {
     final result = await _client.query$TodoDetail(
       Options$Query$TodoDetail(
         variables: Variables$Query$TodoDetail(id: id),
@@ -53,7 +53,7 @@ class TodoRepository {
 
     final todo = result.parsedData!.todo;
 
-    return TodoDto(
+    return Todo(
       id: todo.id,
       text: todo.text,
       done: todo.done,
@@ -62,7 +62,7 @@ class TodoRepository {
     );
   }
 
-  Future<TodoDto> completeTodo(
+  Future<Todo> completeTodo(
     String id,
   ) async {
     final result = await _client.mutate$CompleteTodo(
@@ -79,7 +79,7 @@ class TodoRepository {
 
     final todo = result.parsedData!.completeTodo;
 
-    return TodoDto(
+    return Todo(
       id: todo.id,
       text: todo.text,
       done: todo.done,
@@ -106,7 +106,7 @@ class TodoRepository {
     return result.parsedData!.archiveTodo.id;
   }
 
-  Future<TodoDto> createTodo(
+  Future<Todo> createTodo(
     Input$CreateTodo input,
   ) async {
     final result = await _client.mutate$CreateTodo(
@@ -123,7 +123,7 @@ class TodoRepository {
 
     final todo = result.parsedData!.createTodo;
 
-    return TodoDto(
+    return Todo(
       id: todo.id,
       text: todo.text,
       done: todo.done,
@@ -132,7 +132,7 @@ class TodoRepository {
     );
   }
 
-  Future<TodoDto> updateTodo(
+  Future<Todo> updateTodo(
     String id,
     Input$UpdateTodo input,
   ) async {
@@ -151,7 +151,7 @@ class TodoRepository {
 
     final todo = result.parsedData!.updateTodo;
 
-    return TodoDto(
+    return Todo(
       id: todo.id,
       text: todo.text,
       done: todo.done,
