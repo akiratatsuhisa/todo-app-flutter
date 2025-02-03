@@ -12,22 +12,17 @@ class WelcomeContent extends StatefulWidget {
 }
 
 class _WelcomeContentState extends State<WelcomeContent> {
-  late final HomeBloc _bloc;
   late final PageController _pageController;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
-
-    _bloc = context.read<HomeBloc>();
   }
 
   @override
   void dispose() {
     _pageController.dispose();
-
-    _bloc.close();
     super.dispose();
   }
 
@@ -48,7 +43,9 @@ class _WelcomeContentState extends State<WelcomeContent> {
         },
         child: PageView(
           controller: _pageController,
-          onPageChanged: (value) => _bloc.add(HomePageSet(index: value)),
+          onPageChanged: (value) => context.read<HomeBloc>().add(
+                HomePageSet(index: value),
+              ),
           children: const <Widget>[
             _Page1(),
             _Page2(),

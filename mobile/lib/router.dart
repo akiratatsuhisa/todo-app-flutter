@@ -4,8 +4,12 @@ import 'package:mobile/page/home/bloc/home_bloc.dart';
 import 'package:mobile/page/home/home_page.dart';
 import 'package:mobile/page/login/cubit/login_cubit.dart';
 import 'package:mobile/page/login/login_page.dart';
+import 'package:mobile/page/register/cubit/register_cubit.dart';
+import 'package:mobile/page/register/register_page.dart';
 import 'package:mobile/page/todo/bloc/archived_list_bloc.dart';
 import 'package:mobile/page/todo/bloc/todo_list_bloc.dart';
+import 'package:mobile/page/todo_detail/bloc/todo_detail_bloc.dart';
+import 'package:mobile/page/todo_detail/todo_detail_page.dart';
 import 'package:mobile/page/todo_save/bloc/todo_save_bloc.dart';
 import 'package:mobile/page/todo_save/todo_save_page.dart';
 import 'package:mobile/page/todo/cubit/todo_nav_bar_cubit.dart';
@@ -59,6 +63,16 @@ final router = GoRouter(
       ),
     ),
     GoRoute(
+      path: Routes.register.path,
+      name: Routes.register.name,
+      builder: (context, state) => BlocProvider(
+        create: (context) => RegisterCubit(
+          authenticationRepository: context.read<AuthenticationRepository>(),
+        ),
+        child: const RegisterPage(),
+      ),
+    ),
+    GoRoute(
       path: Routes.todo.path,
       name: Routes.todo.name,
       builder: (context, state) => MultiBlocProvider(
@@ -80,14 +94,20 @@ final router = GoRouter(
         child: const AuthGuard(child: TodoPage()),
       ),
     ),
-    //   GoRoute(
-    //     path: '${Routes.todoDetail.path}/:id',
-    //     name: Routes.todoDetail.name,
-    //     builder: (context, state) => BlocProvider(
-    //       create: (context) => HomeBloc(),
-    //       child: TodoDetailPage(id: state.pathParameters['id']!),
-    //     ),
-    //   ),
+    GoRoute(
+      path: '${Routes.todoDetail.path}/:id',
+      name: Routes.todoDetail.name,
+      builder: (context, state) => BlocProvider(
+        create: (context) => TodoDetailBloc(
+          todoRepository: context.read<TodoRepository>(),
+        )..add(
+            TodoDetailInitialized(
+              id: state.pathParameters['id']!,
+            ),
+          ),
+        child: TodoDetailPage(id: state.pathParameters['id']!),
+      ),
+    ),
     GoRoute(
       path: Routes.todoCreate.path,
       name: Routes.todoCreate.name,

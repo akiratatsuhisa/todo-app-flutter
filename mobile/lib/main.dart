@@ -58,6 +58,7 @@ class MyApp extends StatelessWidget {
   })  : _todoRepository = todoRepository,
         _homeRepository = homeRepository,
         _authenticationRepository = authenticationRepository;
+
   @override
   Widget build(BuildContext context) {
     final materialApp = MaterialApp.router(

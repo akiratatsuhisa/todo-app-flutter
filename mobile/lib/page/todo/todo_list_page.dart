@@ -17,18 +17,14 @@ class TodoListPage extends StatefulWidget {
 class _TodoListPageState extends State<TodoListPage> {
   static const title = "Todo List";
 
-  late final TodoListBloc _bloc;
-
-  Future<void> _fetchData() async => _bloc.add(const TodoListDataFetched());
+  Future<void> _fetchData() async => context.read<TodoListBloc>().add(
+        const TodoListDataFetched(),
+      );
 
   @override
   void initState() {
     super.initState();
-    _bloc = context.read<TodoListBloc>();
-
-    if (_bloc.state is TodoListInitial) {
-      _fetchData();
-    }
+    _fetchData();
   }
 
   PreferredSizeWidget _buildDefaultAppBar(BuildContext context) {
@@ -55,12 +51,12 @@ class _TodoListPageState extends State<TodoListPage> {
 
   Future<bool?> _swipeItem(DismissDirection direction, String id) async {
     if (direction == DismissDirection.startToEnd) {
-      _bloc.add(TodoListItemToggleArchived(id: id));
+      context.read<TodoListBloc>().add(TodoListItemToggleArchived(id: id));
       return true;
     }
 
     if (direction == DismissDirection.endToStart) {
-      _bloc.add(TodoListItemRemoved(id: id));
+      context.read<TodoListBloc>().add(TodoListItemRemoved(id: id));
       return true;
     }
 
@@ -115,22 +111,28 @@ class _TodoListPageState extends State<TodoListPage> {
                   : Text(currentItem.description!),
               leading: Checkbox(
                 value: currentItem.done,
-                onChanged: (value) => _bloc.add(
-                  TodoListItemToggleCompleted(id: currentItem.id),
-                ),
+                onChanged: (value) => context.read<TodoListBloc>().add(
+                      TodoListItemToggleCompleted(id: currentItem.id),
+                    ),
               ),
+              onTap: () => GoRouter.of(context).pushNamed(
+                Routes.todoDetail.name,
+                pathParameters: {'id': currentItem.id},
+              ).then((_) => _fetchData()),
               onLongPress: () async {
-                if (!context.mounted) {
-                  return;
-                }
-
                 final todo = await GoRouter.of(context).pushNamed(
                   Routes.todoUpdate.name,
                   pathParameters: {'id': currentItem.id},
                 );
 
+                if (!context.mounted) {
+                  return;
+                }
+
                 if (todo is Todo) {
-                  _bloc.add(TodoListItemUpdated(todo: todo));
+                  context
+                      .read<TodoListBloc>()
+                      .add(TodoListItemUpdated(todo: todo));
                 }
               },
             ),
@@ -150,15 +152,15 @@ class _TodoListPageState extends State<TodoListPage> {
     return FloatingActionButton(
       child: const Icon(Icons.note_add),
       onPressed: () async {
+        final todo =
+            await GoRouter.of(context).pushNamed(Routes.todoCreate.name);
+
         if (!context.mounted) {
           return;
         }
 
-        final todo =
-            await GoRouter.of(context).pushNamed(Routes.todoCreate.name);
-
         if (todo is Todo) {
-          _bloc.add(TodoListItemAdded(todo: todo));
+          context.read<TodoListBloc>().add(TodoListItemAdded(todo: todo));
         }
       },
     );

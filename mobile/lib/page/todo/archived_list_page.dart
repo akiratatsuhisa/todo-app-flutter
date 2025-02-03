@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile/page/todo/bloc/archived_list_bloc.dart';
+import 'package:mobile/router.dart';
 import 'package:mobile/widget/failure_content.dart';
 
 class ArchivedListPage extends StatefulWidget {
@@ -13,18 +15,14 @@ class ArchivedListPage extends StatefulWidget {
 class _ArchivedListPageState extends State<ArchivedListPage> {
   static const title = "Archived Todo List";
 
-  late final ArchivedListBloc _bloc;
-
-  Future<void> _fetchData() async => _bloc.add(const ArchivedListDataFetched());
+  Future<void> _fetchData() async => context.read<ArchivedListBloc>().add(
+        const ArchivedListDataFetched(),
+      );
 
   @override
   void initState() {
     super.initState();
-    _bloc = context.read<ArchivedListBloc>();
-
-    if (_bloc.state is ArchivedListInitial) {
-      _fetchData();
-    }
+    _fetchData();
   }
 
   PreferredSizeWidget _buildDefaultAppBar(BuildContext context) {
@@ -74,10 +72,14 @@ class _ArchivedListPageState extends State<ArchivedListPage> {
                 Icons.restore,
                 color: Theme.of(context).colorScheme.primary,
               ),
-              onPressed: () => _bloc.add(
-                ArchivedListItemToggleArchived(id: currentItem.id),
-              ),
+              onPressed: () => context.read<ArchivedListBloc>().add(
+                    ArchivedListItemToggleArchived(id: currentItem.id),
+                  ),
             ),
+            onTap: () => GoRouter.of(context).pushNamed(
+              Routes.todoDetail.name,
+              pathParameters: {'id': currentItem.id},
+            ).then((_) => _fetchData()),
           );
         },
         separatorBuilder: (context, index) => const Divider(height: 0.0),

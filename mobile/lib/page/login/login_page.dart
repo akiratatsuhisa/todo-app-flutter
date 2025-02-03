@@ -5,6 +5,7 @@ import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/constant.dart';
 import 'package:mobile/page/login/cubit/login_cubit.dart';
+import 'package:mobile/router.dart';
 
 class LoginPage extends StatelessWidget {
   static const _title = "Login";
@@ -33,6 +34,12 @@ class LoginPage extends StatelessWidget {
           _LoginButton(),
           const SizedBox(height: Constant.space3),
           _GoogleLoginButton(),
+          const Divider(height: Constant.space6),
+          TextButton(
+            child: const Text("Register a new account"),
+            onPressed: () =>
+                GoRouter.of(context).pushNamed(Routes.register.name),
+          ),
           BlocListener<LoginCubit, LoginState>(
             listenWhen: (previous, current) =>
                 previous.status != current.status,

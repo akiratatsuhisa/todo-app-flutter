@@ -61,7 +61,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) async {
     // For development only
-    await _homeRepository.setHasReadWelcome(false);
+    // await _homeRepository.setHasReadWelcome(false);
 
     final hasReadWelcome = _homeRepository.getHasReadWelcome();
 
