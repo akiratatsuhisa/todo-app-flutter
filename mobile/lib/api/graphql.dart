@@ -10,7 +10,7 @@ class GraphQLApi {
   GraphQLApi({
     FirebaseAuth? firebaseAuth,
   }) : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance {
-    final httpLink = HttpLink('http://10.0.2.2:8080/graphql');
+    final httpLink = HttpLink('http://10.0.2.2:6000/graphql');
 
     final authLink = AuthLink(
       getToken: _getToken,
